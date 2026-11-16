@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F7F3EE">
+  <title>Comunitats · demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg: #F7F3EE;
+  --surface: #FFFFFF;
+  --ink: #2A2522;
+  --ink-2: #4A433E;
+  --muted: #6B625C;
+  --line: #E6DED5;
+  --line-soft: #EFE8E0;
+  --chip: #F3EEE8;
+  --accent: #B54A26;
+  --accent-dark: #8E3818;
+  --accent-tint: #FBE9E1;
+  --green: #335A3B;
+  --green-tint: #E6EEE6;
+  --blue: #2B5673;
+  --blue-tint: #E2EBF1;
+  --plum: #6A4870;
+  --plum-tint: #EEE6F0;
+  --ochre: #7A5812;
+  --ochre-tint: #F3ECDB;
+  --on-ink: #FFFFFF;
+  --accent-text: #B54A26;
+  --hover: #FBF8F5;
+  --same: #FAFCF9;
+  --chip-border: var(--chip-border);
+  --dashed: #E3B9A6;
+  --notice-ink: #1F4560;
+  --error: #A3261B;
+  --page: #E9E3DC;
+  --radius-l: 20px;
+  --radius-m: 16px;
+  font-family: Manrope, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1E1A18; --surface: #2A2522; --ink: #F2ECE6; --ink-2: #D6CCC3; --muted: #A99D93;
+    --line: #3D3631; --line-soft: #352F2B; --chip: #3A332E;
+    --accent: #C2552D; --accent-dark: #A3421F; --accent-text: #F0A07E; --accent-tint: #4A2A1E;
+    --green: #8CBF95; --green-tint: #24352A; --blue: #8DB8D6; --blue-tint: #1F3240;
+    --plum: #C9A3CF; --plum-tint: #3A2C3D; --ochre: #D9B56A; --ochre-tint: #3D3220;
+    --on-ink: #1E1A18; --hover: #322C28; --same: #26302A; --chip-border: #4A423C;
+    --dashed: #7A4A38; --notice-ink: #CFE1EE; --error: #F08A7E; --page: #141110;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1E1A18; --surface: #2A2522; --ink: #F2ECE6; --ink-2: #D6CCC3; --muted: #A99D93;
+  --line: #3D3631; --line-soft: #352F2B; --chip: #3A332E;
+  --accent: #C2552D; --accent-dark: #A3421F; --accent-text: #F0A07E; --accent-tint: #4A2A1E;
+  --green: #8CBF95; --green-tint: #24352A; --blue: #8DB8D6; --blue-tint: #1F3240;
+  --plum: #C9A3CF; --plum-tint: #3A2C3D; --ochre: #D9B56A; --ochre-tint: #3D3220;
+  --on-ink: #1E1A18; --hover: #322C28; --same: #26302A; --chip-border: #4A423C;
+  --dashed: #7A4A38; --notice-ink: #CFE1EE; --error: #F08A7E; --page: #141110;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--page); color: var(--ink); -webkit-font-smoothing: antialiased; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--accent-text); }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Marc de l'app */
+.app {
+  position: relative;
+  max-width: 430px;
+  height: 100%;
+  margin: 0 auto;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+@media (min-width: 520px) {
+  body { padding: 24px 0; box-sizing: border-box; }
+  .app { border-radius: 32px; box-shadow: 0 20px 60px rgba(42, 37, 34, 0.18); }
+}
+.view { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 32px; }
+.view.has-fab { padding-bottom: 96px; }
+
+/* Capçaleres */
+.topbar { display: flex; align-items: center; gap: 8px; padding: 16px 16px 4px; }
+.topbar .spacer { flex: 1; }
+.topbar .brand { flex: 1; text-align: center; font-weight: 800; font-size: 15px; letter-spacing: 0.02em; color: var(--accent-text); }
+.icon-btn {
+  flex: none; width: 44px; height: 44px; border-radius: 22px; border: none;
+  background: var(--surface); color: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+}
+.page-head { padding: 12px 20px 4px; display: flex; flex-direction: column; gap: 6px; }
+.page-head .kicker { font-size: 14px; font-weight: 700; color: var(--blue); text-decoration: none; }
+.page-head h1 { margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; }
+.page-head p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+.title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+.hero { padding: 12px 20px 8px; display: flex; flex-direction: column; gap: 16px; }
+.hero h1 { margin: 0; font-size: 28px; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; }
+.search {
+  display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 16px;
+  background: var(--surface); border-radius: var(--radius-m); border: 1px solid var(--line);
+}
+.search input { flex: 1; border: none; outline: none; background: transparent; font-size: 15px; min-width: 0; }
+.search:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-tint); }
+
+.section { padding: 24px 20px 4px; display: flex; flex-direction: column; gap: 12px; }
+.section.flush { padding-left: 0; padding-right: 0; }
+.section.flush > .section-head, .section.flush > .label { padding: 0 20px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; }
+.section-head h2 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.section-head a, .link-btn { font-size: 14px; font-weight: 700; text-decoration: none; color: var(--accent-text); background: none; border: none; padding: 0; }
+.label { font-size: 14px; font-weight: 700; color: var(--muted); margin: 0; }
+
+/* Xips */
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 20px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chips.wrap { flex-wrap: wrap; overflow: visible; padding: 0; }
+.chip {
+  flex: none; height: 38px; padding: 0 16px; border-radius: 19px;
+  border: 1px solid var(--chip-border); background: var(--surface); color: var(--ink);
+  font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+}
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--on-ink); font-weight: 700; }
+.chip.small { height: 34px; padding: 0 14px; font-size: 13px; }
+.chip:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Plafó */
+.board { display: flex; gap: 12px; overflow-x: auto; padding: 2px 20px 4px; scroll-snap-type: x mandatory; scroll-padding: 0 20px; scrollbar-width: none; }
+.board::-webkit-scrollbar { display: none; }
+.board-card {
+  flex: none; width: 236px; padding: 18px; border-radius: var(--radius-l); scroll-snap-align: start;
+  color: var(--ink); text-decoration: none; display: flex; flex-direction: column; gap: 12px;
+}
+.board-card .kind { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
+.board-card .title { font-size: 17px; font-weight: 800; line-height: 1.3; }
+.board-card .meta { font-size: 13px; color: var(--muted); margin-top: auto; }
+.tone-taller { background: var(--accent-tint); } .tone-taller .kind { color: var(--accent-text); }
+.tone-recurs { background: var(--green-tint); } .tone-recurs .kind { color: var(--green); }
+.tone-actualitat { background: var(--blue-tint); } .tone-actualitat .kind { color: var(--blue); }
+
+.board-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.board-tile {
+  min-height: 156px; padding: 14px 12px; border-radius: 18px; color: var(--ink); text-decoration: none;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.board-tile .ic { width: 36px; height: 36px; border-radius: 18px; background: var(--surface); display: flex; align-items: center; justify-content: center; }
+.tone-taller .ic { color: var(--accent-text); } .tone-recurs .ic { color: var(--green); } .tone-actualitat .ic { color: var(--blue); }
+.board-tile .name { font-size: 14px; font-weight: 800; line-height: 1.25; }
+.board-tile .peek { font-size: 12px; line-height: 1.4; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.chip[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--on-ink); font-weight: 700; }
+.chips:not(.wrap) { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent); }
+.chips.at-end { -webkit-mask-image: none; mask-image: none; }
+.welcome {
+  margin: 20px 20px 0; display: flex; align-items: center; gap: 14px; padding: 16px 18px;
+  border-radius: var(--radius-l); background: var(--ink); color: var(--on-ink); text-decoration: none;
+}
+.welcome .circle { flex: none; width: 44px; height: 44px; border-radius: 22px; background: var(--on-ink); color: var(--ink); display: flex; align-items: center; justify-content: center; }
+.welcome .txt { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.welcome strong { font-size: 16px; }
+.welcome span span { font-size: 14px; opacity: 0.8; }
+
+/* Llistes */
+.list { background: var(--surface); border-radius: var(--radius-l); overflow: hidden; }
+.row {
+  display: flex; align-items: center; gap: 14px; padding: 16px; color: var(--ink); text-decoration: none;
+  border-bottom: 1px solid var(--line-soft);
+}
+.row:last-child { border-bottom: none; }
+.row .ico { flex: none; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+.row .txt { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.row .t { font-size: 16px; font-weight: 700; }
+.row .s { font-size: 13px; line-height: 1.4; color: var(--muted); }
+.row .count { flex: none; font-size: 13px; font-weight: 700; color: var(--muted); }
+.row:hover { background: var(--hover); }
+.tone-a { background: var(--green-tint); color: var(--green); }
+.tone-b { background: var(--accent-tint); color: var(--accent-text); }
+.tone-c { background: var(--plum-tint); color: var(--plum); }
+.tone-d { background: var(--ochre-tint); color: var(--ochre); }
+.tone-e { background: var(--blue-tint); color: var(--blue); }
+.tone-x { background: var(--chip); color: var(--ink-2); }
+
+.outline-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: var(--radius-m);
+  border: 1px solid var(--chip-border); background: transparent; color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600;
+}
+
+/* Filtres */
+.filters { padding: 16px 0 4px; display: flex; flex-direction: column; gap: 10px; }
+.selects { display: flex; gap: 10px; padding: 0 20px; }
+.select-wrap { position: relative; flex: 1; }
+.select-wrap select {
+  width: 100%; height: 40px; padding: 0 32px 0 12px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--surface); font-size: 14px; font-weight: 600; appearance: none;
+}
+.select-wrap svg { position: absolute; right: 10px; top: 12px; pointer-events: none; color: var(--muted); }
+
+/* Fils */
+.feed { padding: 12px 12px 0; display: flex; flex-direction: column; gap: 10px; }
+.card { background: var(--surface); border-radius: var(--radius-l); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.card.unanswered { border: 2px dashed var(--dashed); }
+.card.pinned { border: 1px solid var(--blue-tint); }
+.author { display: flex; align-items: center; gap: 10px; }
+.avatar { flex: none; width: 34px; height: 34px; border-radius: 17px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; }
+.author .who { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.author .name { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; flex-wrap: wrap; }
+.author .meta { font-size: 12px; color: var(--muted); }
+.badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 8px; }
+.badge.mentora { background: var(--blue-tint); color: var(--blue); }
+.badge.professional { background: var(--blue); color: var(--on-ink); }
+.badge.nova { background: var(--ochre-tint); color: #6B4D10; }
+.badge.tu { background: var(--chip); color: var(--ink-2); }
+.card h2, .card h3 { margin: 0; font-size: 18px; line-height: 1.3; font-weight: 800; }
+.card .card-link { display: flex; flex-direction: column; gap: 6px; color: var(--ink); text-decoration: none; }
+.card p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+.card .excerpt { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cross { font-size: 12px; font-weight: 700; color: var(--blue); }
+.catname { font-size: 12px; font-weight: 700; color: var(--muted); }
+.tagchips .chip { border-color: transparent; background: var(--chip); }
+.tagchips .chip[aria-pressed="true"] { background: var(--ink); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 10px; background: var(--chip); color: var(--ink-2); }
+.actions { display: flex; align-items: center; gap: 8px; }
+.actions .spacer { flex: 1; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 18px; border: none;
+  background: var(--chip); color: var(--ink); font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap;
+}
+.pill[aria-pressed="true"] { background: var(--accent-tint); color: var(--accent-text); }
+.pill[aria-pressed="true"] svg { fill: currentColor; }
+.answer-btn {
+  display: flex; align-items: center; justify-content: center; height: 44px; border-radius: 14px;
+  background: var(--accent); color: #fff; text-decoration: none; font-size: 14px; font-weight: 700;
+}
+.answer-btn:hover { background: var(--accent-dark); color: #fff; }
+.save-btn { width: 44px; height: 36px; border: none; background: transparent; color: var(--muted); display: inline-flex; align-items: center; justify-content: center; }
+.save-btn[aria-pressed="true"] { color: var(--accent-text); }
+.save-btn[aria-pressed="true"] svg { fill: currentColor; }
+
+.board-inline { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--radius-l); text-decoration: none; color: var(--ink); }
+.board-inline .kind { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
+.board-inline .title { font-size: 17px; font-weight: 800; line-height: 1.3; }
+.board-inline .meta { font-size: 13px; color: var(--muted); }
+
+.empty { margin: 24px 20px; padding: 24px; border-radius: var(--radius-l); background: var(--surface); text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.empty p { margin: 0; color: var(--ink-2); line-height: 1.5; }
+
+.fab {
+  position: absolute; right: 20px; bottom: 96px; z-index: 5; display: flex; align-items: center; gap: 8px;
+  height: 52px; padding: 0 20px; border-radius: 26px; background: var(--ink); color: var(--on-ink); text-decoration: none;
+  font-size: 15px; font-weight: 700; box-shadow: 0 6px 18px rgba(42, 37, 34, 0.25);
+}
+.fab:hover { color: var(--on-ink); }
+
+/* Fil obert */
+.thread { padding: 8px 12px 0; display: flex; flex-direction: column; gap: 10px; }
+.thread .card h1 { margin: 0; font-size: 22px; line-height: 1.25; font-weight: 800; letter-spacing: -0.01em; }
+.thread .card .body { font-size: 15px; line-height: 1.6; color: var(--ink); }
+.replies-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 8px 0; }
+.replies-head h2 { margin: 0; font-size: 17px; font-weight: 800; }
+.toggle-row { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.switch { flex: none; width: 48px; height: 30px; border-radius: 15px; border: none; background: var(--chip-border); padding: 3px; display: flex; transition: background 0.15s; }
+.switch span { width: 24px; height: 24px; border-radius: 12px; background: #fff; transition: transform 0.15s; }
+.switch[aria-checked="true"] { background: var(--green); }
+.switch[aria-checked="true"] span { transform: translateX(18px); }
+.reply { background: var(--surface); border-radius: var(--radius-m); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.reply.same { box-shadow: inset 4px 0 0 var(--green); background: var(--same); }
+.reply.dim { opacity: 0.55; }
+.reply p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--ink); }
+.composer { border-top: 1px solid var(--line-soft); background: var(--bg); padding: 10px 12px 14px; display: flex; gap: 8px; align-items: flex-end; }
+.composer textarea {
+  flex: 1; min-height: 44px; max-height: 140px; padding: 11px 14px; border-radius: 22px; border: 1px solid var(--line);
+  background: var(--surface); font-size: 15px; line-height: 1.4; resize: none;
+}
+.composer button { flex: none; height: 44px; padding: 0 16px; border-radius: 22px; border: none; background: var(--accent); color: #fff; font-weight: 700; }
+.composer button:disabled { background: var(--chip-border); cursor: not-allowed; }
+
+/* Formulari */
+.form-head { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--line-soft); }
+.form-head h1 { margin: 0; font-size: 17px; font-weight: 800; }
+.form-head a { height: 44px; padding: 0 8px; display: flex; align-items: center; color: var(--ink); text-decoration: none; font-weight: 600; }
+.form { padding: 20px; display: flex; flex-direction: column; gap: 22px; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field > label, .field > .label { font-size: 14px; font-weight: 700; color: var(--muted); }
+.field input[type="text"], .field textarea, .field select {
+  padding: 14px; border-radius: var(--radius-m); border: 1px solid var(--line); background: var(--surface); font-size: 15px; line-height: 1.5;
+}
+.field input[type="text"] { height: 52px; font-weight: 700; font-size: 16px; }
+.field textarea { resize: vertical; min-height: 130px; }
+.field select { height: 52px; padding: 0 14px; font-weight: 600; }
+.field .hint { font-size: 13px; color: var(--muted); line-height: 1.4; margin: 0; }
+.field .error { font-size: 13px; color: var(--error); font-weight: 600; margin: 0; }
+.field-row { display: flex; align-items: baseline; justify-content: space-between; }
+.suggest-note { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+.panel { display: flex; flex-direction: column; gap: 12px; padding: 14px; border-radius: var(--radius-m); background: var(--surface); border: 1px solid var(--line); }
+.panel .divider { height: 1px; background: var(--line-soft); }
+.notice { display: flex; gap: 12px; padding: 14px; border-radius: var(--radius-m); background: var(--blue-tint); color: var(--notice-ink); font-size: 13px; line-height: 1.5; }
+.notice a { color: var(--notice-ink); font-weight: 700; }
+.form-foot { padding: 12px 20px 16px; border-top: 1px solid var(--line-soft); background: var(--bg); }
+.primary { width: 100%; height: 52px; border-radius: var(--radius-m); border: none; background: var(--accent); color: #fff; font-size: 16px; font-weight: 700; }
+.primary:hover { background: var(--accent-dark); }
+.danger-link { background: none; border: none; color: var(--error); font-weight: 700; padding: 0; font-size: 14px; }
+
+/* Navegació inferior */
+.tabbar { flex: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 6px 8px 10px; background: var(--surface); border-top: 1px solid var(--line-soft); }
+.tabbar a { height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--muted); text-decoration: none; font-size: 12px; font-weight: 600; }
+.tabbar a[aria-current="page"] { color: var(--accent-text); font-weight: 800; }
+
+/* Avís */
+.toast {
+  position: absolute; left: 50%; bottom: 92px; transform: translate(-50%, 12px); opacity: 0; z-index: 10;
+  background: var(--ink); color: var(--on-ink); padding: 12px 18px; border-radius: 14px; font-size: 14px; font-weight: 600;
+  transition: opacity 0.2s, transform 0.2s; pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+</style>
+</head>
+<body>
+  <div id="app" class="app" aria-live="off"></div>
+  <noscript>Aquesta demo necessita JavaScript activat.</noscript>
+  <script>
+/* Dades de demostració de Comunitats.
+   Tots els noms, textos i xifres són exemples inventats per a la demo. */
+
+window.DEMO = (function () {
+  const H = 3600 * 1000;
+  const D = 24 * H;
+  const now = Date.now();
+
+  const moments = [
+    { id: "diagnostic", name: "Diagnòstic recent" },
+    { id: "tractament", name: "En tractament" },
+    { id: "despres", name: "Després del tractament" },
+    { id: "metastasi", name: "Malaltia metastàtica" }
+  ];
+
+  const blocks = [
+    { id: "fisic", name: "Benestar físic i autocura", tone: "a", icon: "pulse" },
+    { id: "emocional", name: "Benestar emocional", tone: "b", icon: "heart" },
+    { id: "relacions", name: "Relacions, família i sexualitat", tone: "c", icon: "people" },
+    { id: "vida", name: "Vida després del càncer", tone: "d", icon: "sprout" },
+    { id: "tractaments", name: "Tractaments i salut", tone: "e", icon: "clipboard" }
+  ];
+
+  // linkedTags: fils d'altres categories amb aquestes etiquetes també surten aquí
+  const categories = [
+    { id: "activitat-fisica", block: "fisic", name: "Activitat física", linkedTags: ["activitat-fisica"] },
+    { id: "alimentacio", block: "fisic", name: "Alimentació i hàbits", linkedTags: ["alimentacio"] },
+    { id: "descans", block: "fisic", name: "Descans i son", linkedTags: ["son"] },
+    { id: "estres", block: "fisic", name: "Estrès i relaxació", linkedTags: [] },
+    { id: "pell", block: "fisic", name: "Cura de la pell i del cos", linkedTags: ["pell"] },
+
+    { id: "por", block: "emocional", name: "Por i incertesa", linkedTags: ["por"] },
+    { id: "afrontar", block: "emocional", name: "Afrontar el diagnòstic", linkedTags: [] },
+    { id: "soledat", block: "emocional", name: "Soledat i incomprensió", linkedTags: [] },
+
+    { id: "imatge", block: "relacions", name: "Imatge corporal i autoestima", linkedTags: ["cabell"] },
+    { id: "familia", block: "relacions", name: "Fills i família", linkedTags: ["fills"] },
+    { id: "sexualitat", block: "relacions", name: "Sexualitat i parella", linkedTags: ["parella"] },
+    { id: "amistats", block: "relacions", name: "Amistats i entorn", linkedTags: [] },
+
+    { id: "feina", block: "vida", name: "Feina, baixes i ajuts", linkedTags: ["feina"] },
+    { id: "canvis", block: "vida", name: "Canvis vitals", linkedTags: [] },
+
+    { id: "cirurgia", block: "tractaments", name: "Cirurgia i reconstrucció", linkedTags: ["cicatriu"] },
+    { id: "hormonoterapia", block: "tractaments", name: "Hormonoteràpia i efectes", linkedTags: ["sufocacions"] },
+    { id: "quimio", block: "tractaments", name: "Quimioteràpia i radioteràpia", linkedTags: [] },
+    { id: "limfedema", block: "tractaments", name: "Limfedema i rehabilitació", linkedTags: ["limfedema"] },
+    { id: "revisions", block: "tractaments", name: "Revisions i seguiment", linkedTags: ["revisions"] },
+    { id: "altres", block: "tractaments", name: "Altres temes de salut", linkedTags: [] },
+
+    { id: "benvinguda", block: null, name: "Benvinguda", linkedTags: [] },
+    { id: "suport", block: null, name: "Suport i ajuda amb l’app", linkedTags: [] }
+  ];
+
+  // Llista tancada d'etiquetes. "keys" serveix per suggerir-les a partir del text.
+  const tags = [
+    { id: "son", name: "son", keys: ["dormir", "insomni", "son ", "desperto", "despertar", "nit"] },
+    { id: "cansament", name: "cansament", keys: ["cansada", "esgotada", "cansament", "fatiga", "sense energia"] },
+    { id: "estat-anim", name: "estat d’ànim", keys: ["trista", "anim", "plorar", "plor", "baixona", "deprimida"] },
+    { id: "dolor-ossos", name: "dolor d’ossos", keys: ["ossos", "articulacions", "articular", "dolor"] },
+    { id: "sufocacions", name: "sufocacions", keys: ["sufoc", "calor", "suor", "sudo"] },
+    { id: "cabell", name: "pèrdua de cabell", keys: ["cabell", "perruca", "calba", "mocador", "celles"] },
+    { id: "activitat-fisica", name: "activitat física", keys: ["caminar", "esport", "gimnas", "nedar", "ioga", "exercici", "correr"] },
+    { id: "alimentacio", name: "alimentació", keys: ["menjar", "dieta", "aliment", "pes ", "cuinar", "gana"] },
+    { id: "pell", name: "pell", keys: ["pell", "crema", "ungles", "sequedat", "radiodermitis"] },
+    { id: "por", name: "por i incertesa", keys: ["por", "espantada", "incertesa", "angoixa", "nerviosa", "recaiguda"] },
+    { id: "fills", name: "fills", keys: ["fills", "filla", "fill ", "nens", "nena", "nen "] },
+    { id: "parella", name: "parella", keys: ["parella", "marit", "sexualitat", "libido", "intimitat"] },
+    { id: "feina", name: "feina", keys: ["feina", "baixa", "treball", "incapacitat", "ajuts", "empresa"] },
+    { id: "cicatriu", name: "cicatriu", keys: ["cicatriu", "reconstruccio", "protesi", "operacio", "mastectomia"] },
+    { id: "limfedema", name: "limfedema", keys: ["limfedema", "braç", "drenatge", "maniga"] },
+    { id: "revisions", name: "revisions", keys: ["revisio", "mamografia", "analitica", "marcadors", "control"] }
+  ];
+
+  const board = [
+    { id: "p1", kind: "taller", label: "Tallers i activitats", title: "Taller: cuidar-me durant la hormonoteràpia", meta: "[DATA] · [LLOC O EN LÍNIA]", category: "hormonoterapia" },
+    { id: "p2", kind: "recurs", label: "Recursos", title: "Nous recursos per acompanyar-te", meta: "Revisat el [DATA]", category: null },
+    { id: "p3", kind: "actualitat", label: "Actualitat", title: "[TITULAR DE LA NOTÍCIA]", meta: "[DATA]", category: null },
+    { id: "p4", kind: "taller", label: "Tallers i activitats", title: "Caminada en grup", meta: "[DATA] · [LLOC]", category: "activitat-fisica" },
+    { id: "p5", kind: "recurs", label: "Recursos", title: "Guia sobre drets laborals i baixes", meta: "Revisat el [DATA]", category: "feina" }
+  ];
+
+  const people = {
+    montse: { name: "montse_r", tone: "c" },
+    laura: { name: "laura.m", tone: "a", badge: "mentora" },
+    nuria: { name: "nuria_bcn", tone: "d", badge: "nova" },
+    equip: { name: "Equip de Comunitats", tone: "e", badge: "professional" },
+    carme: { name: "carme62", tone: "b" },
+    rosa: { name: "rosa_g", tone: "e" },
+    marta: { name: "marta.v", tone: "d", badge: "mentora" },
+    ines: { name: "ines_s", tone: "c" },
+    pilar: { name: "pilar.f", tone: "a" },
+    joana: { name: "joana_t", tone: "b", badge: "nova" }
+  };
+
+  const threads = [
+    {
+      id: "t1", category: "hormonoterapia", author: "montse", moment: "despres", at: now - 3 * H,
+      title: "Insomni amb tamoxifè: a algú més li passa?",
+      body: "Fa uns mesos que el prenc i em desperto cada nit de matinada sense poder tornar a dormir. Al matí estic esgotada. Què us ha funcionat?",
+      tags: ["son", "cansament"], reactions: 24,
+      replies: [
+        { author: "laura", moment: "despres", at: now - 2 * H, text: "A mi em va passar els primers mesos. El que més em va ajudar va ser no mirar el mòbil quan em despertava i aixecar-me a llegir una estona. Ho vaig comentar a l’oncòloga i em va donar algunes pautes.", reactions: 9 },
+        { author: "carme", moment: "tractament", at: now - 90 * 60 * 1000, text: "Jo estic igual ara mateix. Llegir-vos em tranquil·litza, pensava que era cosa meva.", reactions: 6 },
+        { author: "pilar", moment: "despres", at: now - 40 * 60 * 1000, text: "Fer ioga suau a la tarda em va anar molt bé. Al Plafó hi ha un taller, per si t’interessa.", reactions: 3 }
+      ]
+    },
+    {
+      id: "t2", category: "hormonoterapia", author: "laura", moment: "despres", at: now - 26 * H,
+      title: "Dolor d’ossos amb inhibidors: el que m’ha ajudat a seguir caminant",
+      body: "Comparteixo la meva experiència dels primers mesos, per si serveix a qui hi està començant. Al principi em feia mal tot en llevar-me, però caminar cada dia, encara que fos poc, em va anar millorant la sensació.",
+      tags: ["dolor-ossos", "activitat-fisica"], reactions: 12,
+      replies: [
+        { author: "rosa", moment: "tractament", at: now - 20 * H, text: "Gràcies per compartir-ho. Jo començo ara i em fa por que em passi el mateix.", reactions: 2 },
+        { author: "marta", moment: "despres", at: now - 18 * H, text: "Coincideixo, el moviment ajuda molt. I parlar-ho a la revisió, que de vegades hi ha opcions.", reactions: 4 }
+      ]
+    },
+    {
+      id: "t3", category: "hormonoterapia", author: "nuria", moment: "tractament", at: now - 5 * H,
+      title: "Començo letrozol la setmana que ve. Què puc esperar?",
+      body: "Estic una mica espantada amb tot el que he llegit. M’agradaria sentir experiències reals.",
+      tags: ["por"], reactions: 3, replies: []
+    },
+    {
+      id: "t4", category: "hormonoterapia", author: "equip", moment: null, at: now - 30 * D, pinned: true,
+      title: "Dubtes freqüents sobre hormonoteràpia, revisats per l’equip mèdic",
+      body: "Respostes validades a les preguntes que més surten a la comunitat. Revisat el [DATA].",
+      tags: [], reactions: 15, replies: []
+    },
+    {
+      id: "t5", category: "quimio", author: "rosa", moment: "tractament", at: now - 2 * D,
+      title: "Quan us va començar a caure el cabell?",
+      body: "Tinc el segon cicle la setmana vinent i no sé si tallar-me’l ja o esperar. Com ho vau viure vosaltres?",
+      tags: ["cabell"], reactions: 18,
+      replies: [
+        { author: "ines", moment: "despres", at: now - 47 * H, text: "Jo me’l vaig tallar curt abans i em va ajudar a sentir que ho decidia jo. Ara ja m’ha tornat a créixer.", reactions: 11 },
+        { author: "joana", moment: "tractament", at: now - 30 * H, text: "Jo estic igual que tu, ens anem explicant?", reactions: 5 }
+      ]
+    },
+    {
+      id: "t6", category: "feina", author: "marta", moment: "despres", at: now - 4 * D,
+      title: "Tornar a la feina després de la baixa",
+      body: "Torno d’aquí a un mes i tinc sentiments barrejats. Algú ha demanat una reincorporació progressiva? Com us va anar amb l’empresa?",
+      tags: ["feina"], reactions: 21,
+      replies: [
+        { author: "pilar", moment: "despres", at: now - 3 * D, text: "Jo la vaig demanar i em va anar bé tenir uns mesos d’adaptació. Parla-ho amb recursos humans amb temps.", reactions: 7 },
+        { author: "carme", moment: "tractament", at: now - 3 * D + 5 * H, text: "A mi encara em queda, però guardo el fil. Al Plafó hi ha una guia sobre drets laborals.", reactions: 2 }
+      ]
+    },
+    {
+      id: "t7", category: "cirurgia", author: "joana", moment: "diagnostic", at: now - 9 * H,
+      title: "Reconstrucció immediata o diferida?",
+      body: "M’han donat les dues opcions i no sé què triar. M’agradaria saber com ho vau decidir vosaltres i com us sentiu ara.",
+      tags: ["cicatriu"], reactions: 8,
+      replies: [
+        { author: "ines", moment: "despres", at: now - 6 * H, text: "Jo la vaig fer diferida perquè necessitava temps per pensar-ho. Cada cas és diferent, però escriure els meus dubtes abans de la consulta em va ajudar molt.", reactions: 5 }
+      ]
+    },
+    {
+      id: "t8", category: "familia", author: "carme", moment: "diagnostic", at: now - 6 * D,
+      title: "Com ho vau explicar als fills petits?",
+      body: "Tinc dues nenes de 5 i 8 anys i no sé per on començar.",
+      tags: ["fills"], reactions: 16,
+      replies: [
+        { author: "marta", moment: "despres", at: now - 5 * D, text: "Amb paraules senzilles i sense amagar-ho. Hi ha contes pensats per a això, et passo els noms per missatge.", reactions: 8 },
+        { author: "rosa", moment: "tractament", at: now - 5 * D + 3 * H, text: "A nosaltres ens va ajudar que l’escola ho sabés.", reactions: 3 }
+      ]
+    },
+    {
+      id: "t9", category: "activitat-fisica", author: "pilar", moment: "despres", at: now - 3 * D,
+      title: "Algú s’apunta a caminar els dissabtes?",
+      body: "Estic intentant mantenir l’hàbit i em costa sola. Si som unes quantes ens podem animar.",
+      tags: ["activitat-fisica"], reactions: 10,
+      replies: [
+        { author: "laura", moment: "despres", at: now - 2 * D, text: "Compta amb mi! I mira la caminada en grup del Plafó.", reactions: 4 }
+      ]
+    },
+    {
+      id: "t10", category: "benvinguda", author: "joana", moment: "diagnostic", at: now - 11 * H,
+      title: "Hola, soc nova per aquí",
+      body: "Fa un mes que em van diagnosticar. Encara estic una mica perduda, però m’ha fet bé llegir-vos.",
+      tags: [], reactions: 14,
+      replies: [
+        { author: "laura", moment: "despres", at: now - 10 * H, text: "Benvinguda, Joana. Aquí trobaràs gent que ha passat per moments semblants. Pregunta el que vulguis.", reactions: 6 }
+      ]
+    },
+    {
+      id: "t11", category: "limfedema", author: "ines", moment: "despres", at: now - 8 * D,
+      title: "La màniga de compressió a l’estiu",
+      body: "Amb la calor se’m fa molt pesada. Teniu trucs per portar-la millor?",
+      tags: ["limfedema"], reactions: 7,
+      replies: [
+        { author: "marta", moment: "despres", at: now - 7 * D, text: "Jo en tinc dues i les vaig alternant. I la fisioterapeuta em va donar consells que em van anar bé.", reactions: 3 }
+      ]
+    },
+    {
+      id: "t12", category: "por", author: "montse", moment: "despres", at: now - 2 * D - 4 * H,
+      title: "La por abans de cada revisió",
+      body: "Ja fa tres anys i encara em passo la setmana abans de la mamografia sense dormir. És normal?",
+      tags: ["por", "revisions"], reactions: 27,
+      replies: [
+        { author: "pilar", moment: "despres", at: now - 2 * D, text: "Molt normal. A mi em va ajudar planificar alguna cosa agradable just després de la revisió.", reactions: 9 },
+        { author: "ines", moment: "despres", at: now - 40 * H, text: "Em passa exactament el mateix. Gràcies per posar-hi paraules.", reactions: 6 }
+      ]
+    },
+    {
+      id: "t13", category: "descans", author: "carme", moment: "tractament", at: now - 4 * D - 2 * H,
+      title: "Meditacions per adormir-se",
+      body: "He provat algunes meditacions guiades abans d’anar a dormir i em van bé. Compartiu les vostres?",
+      tags: ["son"], reactions: 9,
+      replies: []
+    },
+    {
+      id: "t14", category: "suport", author: "equip", moment: null, at: now - 20 * D, pinned: true,
+      title: "Com funcionen les etiquetes i el meu moment",
+      body: "Quan crees un fil, l’app et suggereix etiquetes segons el que escrius. El teu moment ve del perfil i el pots canviar o amagar quan vulguis.",
+      tags: [], reactions: 4, replies: []
+    }
+  ];
+
+  const profile = { name: "tu", alias: "anna_demo", moment: "despres", showMoment: true };
+
+  return { moments, blocks, categories, tags, board, people, threads, profile };
+})();
+
+</script>
+  <script>
+/* Comunitats · demo interactiva
+   HTML + CSS + JavaScript sense dependències. Les dades es guarden al navegador (localStorage). */
+(function () {
+  "use strict";
+
+  const STORE_KEY = "comunitats-demo-v1";
+  const D = window.DEMO;
+
+  /* ---------- Estat ---------- */
+  function freshState() {
+    return {
+      threads: JSON.parse(JSON.stringify(D.threads)),
+      profile: Object.assign({}, D.profile),
+      reacted: {},
+      saved: {}
+    };
+  }
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) return Object.assign(freshState(), JSON.parse(raw));
+    } catch (e) { /* sense emmagatzematge: es fa servir l'estat inicial */ }
+    return freshState();
+  }
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignorat */ }
+  }
+  let state = load();
+
+  const ui = {
+    homeMoment: "tots",
+    filters: {},          // per categoria: { tag, moment, sort }
+    blockFilters: {},     // per bloc: { sub, tag, moment, sort }
+    highlightMine: false,
+    draft: null,          // nou fil en curs
+    showAllTags: false
+  };
+
+  /* ---------- Utilitats ---------- */
+  const $ = (sel, root) => (root || document).querySelector(sel);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const norm = (s) => " " + String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9ç·' ]/g, " ") + " ";
+  const cat = (id) => D.categories.find((c) => c.id === id);
+  const block = (id) => D.blocks.find((b) => b.id === id);
+  const tag = (id) => D.tags.find((t) => t.id === id);
+  const momentName = (id) => (D.moments.find((m) => m.id === id) || {}).name || "";
+  const thread = (id) => state.threads.find((t) => t.id === id);
+
+  function person(key) {
+    if (key === "me") return { name: state.profile.alias, tone: "x", badge: "tu" };
+    return D.people[key] || { name: key, tone: "x" };
+  }
+
+  function ago(ts) {
+    const m = Math.round((Date.now() - ts) / 60000);
+    if (m < 1) return "ara mateix";
+    if (m < 60) return "fa " + m + " min";
+    const h = Math.round(m / 60);
+    if (h < 24) return "fa " + h + " h";
+    const d = Math.round(h / 24);
+    if (d === 1) return "ahir";
+    if (d < 30) return "fa " + d + " dies";
+    return "fa més d’un mes";
+  }
+
+  function threadsInBlock(bid) {
+    const ids = D.categories.filter((c) => c.block === bid).map((c) => c.id);
+    return state.threads.filter((t) => ids.includes(t.category));
+  }
+
+  /* ---------- Icones ---------- */
+  const P = {
+    menu: '<path d="M4 7h16M4 12h16M4 17h10"/>',
+    bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+    back: '<path d="M15 6l-6 6 6 6"/>',
+    chevron: '<path d="M9 6l6 6-6 6"/>',
+    down: '<path d="M6 9l6 6 6-6"/>',
+    calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    book: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h6M9 13h6"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    userPlus: '<path d="M4 18v-1a5 5 0 0 1 5-5h2"/><circle cx="9" cy="7" r="3.5"/><path d="M17 13v6M14 16h6"/>',
+    heart: '<path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/>',
+    comment: '<path d="M5 5h14v10H10l-5 4z"/>',
+    bookmark: '<path d="M7 4h10v16l-5-3.5L7 20z"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    pin: '<path d="M9 4h6l-1 5 3 3v2H7v-2l3-3zM12 14v6"/>',
+    info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 16.5v-5M12 8h.01"/>',
+    sparkle: '<path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4z"/>',
+    home: '<path d="M4 11l8-6.5 8 6.5V20h-5v-5h-6v5H4z"/>',
+    people: '<circle cx="9" cy="8" r="3"/><path d="M3.5 19.5c0-3.2 2.4-5 5.5-5s5.5 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.6c2.7 0 4.5 1.5 4.5 4"/>',
+    user: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/>',
+    pulse: '<path d="M3 12h4l2.5-6 5 12 2.5-6h4"/>',
+    sprout: '<path d="M12 20v-8"/><path d="M12 12c0-4 3-6.5 7.5-6.5 0 4.2-3 6.5-7.5 6.5z"/><path d="M12 14.5c0-3.2-2.6-5.5-6.5-5.5 0 3.4 2.6 5.5 6.5 5.5z"/>',
+    clipboard: '<rect x="5" y="4.5" width="14" height="16" rx="2.5"/><path d="M9.5 4.5V3h5v1.5M12 9.5v6M9 12.5h6"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    wave: '<path d="M7 11V6.5a1.5 1.5 0 0 1 3 0V11M10 10V5a1.5 1.5 0 0 1 3 0v5M13 10V6a1.5 1.5 0 0 1 3 0v6"/><path d="M7 11a1.5 1.5 0 0 0-3 0v2a7 7 0 0 0 7 7h1a6 6 0 0 0 6-6v-2"/>'
+  };
+  function icon(name, size, sw) {
+    return '<svg width="' + (size || 20) + '" height="' + (size || 20) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 1.8) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P[name] + "</svg>";
+  }
+
+  /* ---------- Peces ---------- */
+  function badgeHtml(b) {
+    if (!b) return "";
+    const t = { mentora: "Mentora", professional: "Professional", nova: "Nova", tu: "Tu" }[b];
+    return '<span class="badge ' + b + '">' + t + "</span>";
+  }
+  function authorHtml(key, moment, at, extra) {
+    const p = person(key);
+    const meta = [moment ? momentName(moment) : null, extra || ago(at)].filter(Boolean).join(" · ");
+    return '<div class="author"><span class="avatar tone-' + p.tone + '" aria-hidden="true">' + esc(p.name.charAt(0).toUpperCase()) + '</span>' +
+      '<span class="who"><span class="name">' + esc(p.name) + badgeHtml(p.badge) + '</span><span class="meta">' + esc(meta) + "</span></span></div>";
+  }
+  function tagsHtml(ids) {
+    if (!ids || !ids.length) return "";
+    return '<div class="tags">' + ids.map((id) => '<span class="tag">' + esc((tag(id) || {}).name || id) + "</span>").join("") + "</div>";
+  }
+  function reactBtn(key, count) {
+    const on = !!state.reacted[key];
+    return '<button class="pill" data-action="react" data-key="' + key + '" aria-pressed="' + on + '">' + icon("heart", 18) +
+      "M’hi identifico · " + (count + (on ? 1 : 0)) + "</button>";
+  }
+  function cardHtml(t, fromCat, blockIds) {
+    const c = cat(t.category);
+    let cross = "";
+    if (blockIds) cross = blockIds.includes(t.category) ? '<span class="catname">' + esc(c.name) + "</span>" : '<span class="cross">Des de ' + esc(c.name) + "</span>";
+    else if (fromCat && t.category !== fromCat) cross = '<span class="cross">Des de ' + esc(c.name) + "</span>";
+    const unanswered = !t.pinned && t.replies.length === 0;
+    let actions;
+    if (unanswered) {
+      actions = '<a class="answer-btn" href="#/fil/' + t.id + '?respon">Encara no té respostes · Respon-li</a>';
+    } else {
+      const n = t.replies.length;
+      actions = '<div class="actions">' + reactBtn(t.id, t.reactions) +
+        (t.pinned ? "" : '<a class="pill" href="#/fil/' + t.id + '">' + icon("comment", 18) + n + (n === 1 ? " resposta" : " respostes") + "</a>") +
+        '<span class="spacer"></span><button class="save-btn" data-action="save" data-id="' + t.id + '" aria-pressed="' + !!state.saved[t.id] + '" aria-label="Desar">' + icon("bookmark") + "</button></div>";
+    }
+    return '<article class="card' + (unanswered ? " unanswered" : "") + (t.pinned ? " pinned" : "") + '">' +
+      authorHtml(t.author, t.moment, t.at, t.pinned ? "Fil fixat" : null) + cross +
+      '<a class="card-link" href="#/fil/' + t.id + '"><h2>' + esc(t.title) + '</h2><p class="excerpt">' + esc(t.body) + "</p></a>" +
+      tagsHtml(t.tags) + actions + "</article>";
+  }
+  const BOARD_KINDS = [["taller", "Tallers i activitats"], ["actualitat", "Actualitat"], ["recurs", "Recursos"]];
+  function boardKindIcon(kind) { return { taller: "calendar", recurs: "book", actualitat: "clock" }[kind]; }
+
+  /* ---------- Vistes ---------- */
+  function viewHome() {
+    const moments = [{ id: "tots", name: "Tots" }].concat(D.moments);
+    let recent = state.threads.filter((t) => !t.pinned && t.category !== "suport");
+    if (ui.homeMoment !== "tots") recent = recent.filter((t) => t.moment === ui.homeMoment);
+    recent = recent.sort((a, b) => b.at - a.at).slice(0, 3);
+
+    return {
+      tab: "comunitat",
+      html:
+        '<div class="topbar"><button class="icon-btn" aria-label="Menú" data-action="toast" data-msg="El menú no forma part de la demo">' + icon("menu") + '</button>' +
+        '<span class="brand">Comunitats</span><button class="icon-btn" aria-label="Notificacions" data-action="toast" data-msg="Sense notificacions noves">' + icon("bell") + "</button></div>" +
+        '<section class="hero"><h1>De què vols parlar avui?</h1>' +
+        '<form class="search" role="search" data-form="search"><label for="q" class="sr">Cerca</label>' + icon("search") +
+        '<input id="q" name="q" type="search" placeholder="Cerca temes, etiquetes o experiències" autocomplete="off"></form></section>' +
+
+        '<section class="section flush"><p class="label">El meu moment</p><div class="chips">' +
+        moments.map((m) => '<button class="chip" data-action="home-moment" data-id="' + m.id + '" aria-pressed="' + (ui.homeMoment === m.id) + '">' + esc(m.name) + "</button>").join("") +
+        "</div></section>" +
+
+        '<section class="section"><div class="section-head"><h2>Plafó</h2><a href="#/plafo">Veure-ho tot</a></div><div class="board-grid">' +
+        BOARD_KINDS.map((k) => {
+          const first = D.board.find((b) => b.kind === k[0]);
+          return '<a class="board-tile tone-' + k[0] + '" href="#/plafo/' + k[0] + '"><span class="ic">' + icon(boardKindIcon(k[0]), 18, 2) + '</span><span class="name">' + k[1] + '</span>' +
+            (first ? '<span class="peek">' + esc(first.title) + "</span>" : "") + "</a>";
+        }).join("") +
+        "</div></section>" +
+
+        '<a class="welcome" href="#/cat/benvinguda"><span class="circle">' + icon("userPlus", 22) + '</span><span class="txt"><strong>Ets nova a la comunitat?</strong><span>Presenta’t a la Benvinguda</span></span>' + icon("chevron", 20, 2) + "</a>" +
+
+        '<section class="section"><div class="section-head"><h2>Explora les comunitats</h2></div><div class="list">' +
+        D.blocks.map((b) => {
+          const sub = D.categories.filter((c) => c.block === b.id).map((c, i) => i ? c.name.charAt(0).toLowerCase() + c.name.slice(1) : c.name).join(", ");
+          return '<a class="row" href="#/bloc/' + b.id + '"><span class="ico tone-' + b.tone + '">' + icon(b.icon, 24) + '</span><span class="txt"><span class="t">' + esc(b.name) + '</span><span class="s">' + esc(sub) + "</span></span>" + icon("chevron", 18, 2) + "</a>";
+        }).join("") +
+        "</div></section>" +
+
+        '<section class="section"><div class="section-head"><h2>Ara a la comunitat</h2></div>' +
+        (recent.length ? '<div class="feed" style="padding:0">' + recent.map((t) => cardHtml(t)).join("") + "</div>"
+          : '<div class="empty" style="margin:0"><p>Encara no hi ha fils recents d’aquest moment. Pots ser la primera a obrir-ne un.</p><a class="answer-btn" style="padding:0 18px" href="#/nou">Obre un fil</a></div>') +
+        '</section><section class="section"><a class="outline-btn" href="#/cat/suport">' + icon("info", 18) + "Suport i ajuda amb l’app</a></section>"
+    };
+  }
+
+  function viewBlock(id) {
+    const b = block(id);
+    if (!b) return viewNotFound();
+    const cats = D.categories.filter((c) => c.block === id);
+    const ids = cats.map((c) => c.id);
+    const f = ui.blockFilters[id] || (ui.blockFilters[id] = { sub: "tots", tag: "tots", moment: "tots", sort: "recents" });
+
+    const seen = {};
+    const base = cats.flatMap((c) => feedFor(c.id)).filter((t) => (seen[t.id] ? false : (seen[t.id] = true)));
+    let list = f.sub === "tots" ? base : feedFor(f.sub);
+    const tagIds = [...new Set(list.flatMap((t) => t.tags))];
+    if (f.tag !== "tots") list = list.filter((t) => t.tags.includes(f.tag));
+    if (f.moment !== "tots") list = list.filter((t) => t.moment === f.moment);
+    if (f.sort === "sense") list = list.filter((t) => !t.pinned && t.replies.length === 0);
+    const score = (t) => t.replies.length * 3 + t.reactions;
+    list = list.slice().sort((a, c) => (c.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (f.sort === "actius" ? score(c) - score(a) : c.at - a.at));
+
+    const cards = list.map((t) => cardHtml(t, null, f.sub === "tots" ? ids : [f.sub]));
+    const boardItem = D.board.find((x) => (f.sub === "tots" ? ids.includes(x.category) : x.category === f.sub));
+    if (boardItem && cards.length) {
+      cards.splice(1, 0, '<a class="board-inline tone-' + boardItem.kind + '" href="#/plafo"><span class="kind">' + icon(boardKindIcon(boardItem.kind), 16, 2) + "Del Plafó · " + esc(boardItem.label) + '</span><span class="title">' + esc(boardItem.title) + '</span><span class="meta">' + esc(boardItem.meta) + "</span></a>");
+    }
+    const sel = (name, value, opts, label) =>
+      '<div class="select-wrap"><label class="sr" for="b-' + name + '">' + label + '</label><select id="b-' + name + '" data-bfilter="' + name + '" data-block="' + id + '">' +
+      opts.map((o) => '<option value="' + o[0] + '"' + (o[0] === value ? " selected" : "") + ">" + esc(o[1]) + "</option>").join("") + "</select>" + icon("down", 16, 2) + "</div>";
+    const subName = f.sub === "tots" ? null : cat(f.sub).name;
+
+    return {
+      tab: "comunitat",
+      fab: '<a class="fab" href="#/nou' + (f.sub === "tots" ? "" : "/" + f.sub) + '">' + icon("plus", 20, 2) + "Nou fil</a>",
+      html:
+        '<div class="topbar"><a class="icon-btn" href="#/" aria-label="Tornar">' + icon("back", 20, 2) + "</a></div>" +
+        '<div class="page-head"><h1>' + esc(b.name) + "</h1><p>" + list.length + (list.length === 1 ? " fil" : " fils") + (subName ? " a " + esc(subName) : "") + "</p></div>" +
+        '<div class="filters">' +
+        '<div class="chips" role="group" aria-label="Subcategories"><button class="chip" data-action="block-sub" data-block="' + id + '" data-id="tots" aria-pressed="' + (f.sub === "tots") + '">Tots</button>' +
+        cats.map((c) => '<button class="chip" data-action="block-sub" data-block="' + id + '" data-id="' + c.id + '" aria-pressed="' + (f.sub === c.id) + '">' + esc(c.name) + "</button>").join("") + "</div>" +
+        (tagIds.length ? '<div class="chips tagchips" role="group" aria-label="Etiquetes"><button class="chip small" data-action="block-tag" data-block="' + id + '" data-id="tots" aria-pressed="' + (f.tag === "tots") + '">Totes les etiquetes</button>' +
+          tagIds.map((tid) => '<button class="chip small" data-action="block-tag" data-block="' + id + '" data-id="' + tid + '" aria-pressed="' + (f.tag === tid) + '">' + esc(tag(tid).name) + "</button>").join("") + "</div>" : "") +
+        '<div class="selects">' +
+        sel("sort", f.sort, [["recents", "Més recents"], ["actius", "Més actius"], ["sense", "Sense resposta"]], "Ordre") +
+        sel("moment", f.moment, [["tots", "Totes les etapes"]].concat(D.moments.map((m) => [m.id, m.name])), "Etapa") +
+        "</div></div>" +
+        (cards.length ? '<div class="feed">' + cards.join("") + "</div>"
+          : '<div class="empty"><p>No hi ha cap fil amb aquests filtres.</p><a class="answer-btn" style="padding:0 18px" href="#/nou' + (f.sub === "tots" ? "" : "/" + f.sub) + '">Obre el primer fil</a></div>')
+    };
+  }
+
+  function feedFor(cid) {
+    const c = cat(cid);
+    return state.threads.filter((t) => t.category === cid || (c.linkedTags || []).some((tg) => t.tags.includes(tg)));
+  }
+
+  function viewCategory(id) {
+    const c = cat(id);
+    if (!c) return viewNotFound();
+    if (c.block) {
+      const bf = ui.blockFilters[c.block] || (ui.blockFilters[c.block] = { sub: "tots", tag: "tots", moment: "tots", sort: "recents" });
+      bf.sub = id; bf.tag = "tots";
+      current = "/bloc/" + c.block;
+      return viewBlock(c.block);
+    }
+    const f = ui.filters[id] || (ui.filters[id] = { tag: "tots", moment: "tots", sort: "recents" });
+    const all = feedFor(id);
+    const tagIds = [...new Set(all.flatMap((t) => t.tags))];
+    let list = all.slice();
+    if (f.tag !== "tots") list = list.filter((t) => t.tags.includes(f.tag));
+    if (f.moment !== "tots") list = list.filter((t) => t.moment === f.moment);
+    if (f.sort === "sense") list = list.filter((t) => !t.pinned && t.replies.length === 0);
+    const score = (t) => t.replies.length * 3 + t.reactions;
+    list.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (f.sort === "actius" ? score(b) - score(a) : b.at - a.at));
+
+    const b = c.block ? block(c.block) : null;
+    const boardItem = D.board.find((x) => x.category === id);
+    let cards = list.map((t) => cardHtml(t, id));
+    if (boardItem && cards.length) {
+      const bi = '<a class="board-inline tone-' + boardItem.kind + '" href="#/plafo"><span class="kind">' + icon(boardKindIcon(boardItem.kind), 16, 2) + "Del Plafó · " + esc(boardItem.label) + '</span><span class="title">' + esc(boardItem.title) + '</span><span class="meta">' + esc(boardItem.meta) + "</span></a>";
+      cards.splice(Math.min(1, cards.length), 0, bi);
+    }
+    const sel = (name, value, opts, label) =>
+      '<div class="select-wrap"><label class="sr" for="f-' + name + '">' + label + '</label><select id="f-' + name + '" data-filter="' + name + '">' +
+      opts.map((o) => '<option value="' + o[0] + '"' + (o[0] === value ? " selected" : "") + ">" + esc(o[1]) + "</option>").join("") + "</select>" + icon("down", 16, 2) + "</div>";
+
+    return {
+      tab: "comunitat",
+      fab: '<a class="fab" href="#/nou/' + id + '">' + icon("plus", 20, 2) + "Nou fil</a>",
+      html:
+        '<div class="topbar"><a class="icon-btn" href="' + (b ? "#/bloc/" + b.id : "#/") + '" aria-label="Tornar">' + icon("back", 20, 2) + "</a></div>" +
+        '<div class="page-head">' + (b ? '<a class="kicker" href="#/bloc/' + b.id + '">' + esc(b.name) + "</a>" : "") +
+        '<div class="title-row"><h1>' + esc(c.name) + "</h1></div></div>" +
+        '<div class="filters">' +
+        (tagIds.length ? '<div class="chips"><button class="chip small" data-action="filter-tag" data-id="tots" aria-pressed="' + (f.tag === "tots") + '">Tots</button>' +
+          tagIds.map((tid) => '<button class="chip small" data-action="filter-tag" data-id="' + tid + '" aria-pressed="' + (f.tag === tid) + '">' + esc(tag(tid).name) + "</button>").join("") + "</div>" : "") +
+        '<div class="selects">' +
+        sel("sort", f.sort, [["recents", "Més recents"], ["actius", "Més actius"], ["sense", "Sense resposta"]], "Ordre") +
+        sel("moment", f.moment, [["tots", "Totes les etapes"]].concat(D.moments.map((m) => [m.id, m.name])), "Etapa") +
+        "</div></div>" +
+        (cards.length ? '<div class="feed">' + cards.join("") + "</div>"
+          : '<div class="empty"><p>No hi ha cap fil amb aquests filtres.</p><a class="answer-btn" style="padding:0 18px" href="#/nou/' + id + '">Obre el primer fil</a></div>')
+    };
+  }
+
+  function viewThread(id, query) {
+    const t = thread(id);
+    if (!t) return viewNotFound();
+    const c = cat(t.category);
+    const mine = state.profile.moment;
+    const replies = t.replies.map((r, i) => {
+      const same = ui.highlightMine && r.moment === mine;
+      const dim = ui.highlightMine && r.moment !== mine;
+      return '<article class="reply' + (same ? " same" : "") + (dim ? " dim" : "") + '">' + authorHtml(r.author, r.moment, r.at) +
+        "<p>" + esc(r.text) + '</p><div class="actions">' + reactBtn(t.id + ":" + i, r.reactions) + "</div></article>";
+    }).join("");
+
+    return {
+      tab: null,
+      composer: true,
+      focusReply: query === "respon",
+      html:
+        '<div class="topbar"><a class="icon-btn" href="' + (c.block ? "#/bloc/" + c.block : "#/cat/" + c.id) + '" aria-label="Tornar">' + icon("back", 20, 2) + '</a><span class="spacer"></span>' +
+        '<button class="icon-btn" data-action="save" data-id="' + t.id + '" aria-pressed="' + !!state.saved[t.id] + '" aria-label="Desar">' + icon("bookmark") + "</button></div>" +
+        '<div class="thread"><article class="card">' +
+        '<a class="cross" href="#/cat/' + c.id + '" style="text-decoration:none">' + esc(c.name) + "</a>" +
+        authorHtml(t.author, t.moment, t.at, t.pinned ? "Fil fixat" : null) +
+        "<h1>" + esc(t.title) + '</h1><p class="body">' + esc(t.body) + "</p>" + tagsHtml(t.tags) +
+        '<div class="actions">' + reactBtn(t.id, t.reactions) + "</div></article>" +
+        '<div class="replies-head"><h2>' + (t.replies.length ? t.replies.length + (t.replies.length === 1 ? " resposta" : " respostes") : "Encara no hi ha respostes") + "</h2>" +
+        (t.replies.length ? '<div class="toggle-row"><span id="hl-label">El meu moment</span><button class="switch" role="switch" aria-labelledby="hl-label" aria-checked="' + ui.highlightMine + '" data-action="highlight"><span></span></button></div>' : "") +
+        "</div>" +
+        (ui.highlightMine && t.replies.length ? '<p style="margin:0 8px;font-size:13px;color:var(--muted)">Destacades les respostes de persones en «' + esc(momentName(mine)) + "».</p>" : "") +
+        (replies || '<div class="empty" style="margin:0"><p>Sigues la primera a respondre. Compartir la teva experiència pot ajudar molt.</p></div>') +
+        "</div>",
+      composerHtml:
+        '<form class="composer" data-form="reply" data-id="' + t.id + '"><label for="reply" class="sr">Escriu una resposta</label>' +
+        '<textarea id="reply" rows="1" placeholder="Comparteix la teva experiència…"></textarea><button type="submit" disabled>Respon</button></form>'
+    };
+  }
+
+  function tagAreaHtml() {
+    const d = ui.draft;
+    const text = norm(d.title + " " + d.body);
+    const suggested = D.tags.filter((t) => t.keys.some((k) => text.includes(" " + norm(k).trim()))).map((t) => t.id);
+    const shown = ui.showAllTags ? D.tags.map((t) => t.id) : [...new Set(d.tags.concat(suggested))].slice(0, 6);
+    const full = d.tags.length >= 2;
+    return '<div class="field-row"><span class="label" style="font-size:14px;font-weight:700;color:var(--muted)">Etiquetes</span><span class="hint">' + d.tags.length + " de 2</span></div>" +
+      (ui.showAllTags ? "" : '<div class="suggest-note">' + icon("sparkle", 16) + (suggested.length ? "Suggerides a partir del teu text" : "Escriu el teu missatge i et suggerirem etiquetes") + "</div>") +
+      '<div class="chips wrap">' +
+      shown.map((id) => {
+        const on = d.tags.includes(id);
+        return '<button type="button" class="chip small" data-action="draft-tag" data-id="' + id + '" aria-pressed="' + on + '"' + (!on && full ? " disabled" : "") + ">" + (on ? icon("check", 14, 3) : "") + esc(tag(id).name) + "</button>";
+      }).join("") +
+      '<button type="button" class="link-btn" style="height:34px;padding:0 6px;font-size:13px" data-action="all-tags">' + (ui.showAllTags ? "Només suggerides" : "Totes les etiquetes") + "</button></div>";
+  }
+
+  function viewNew(catId) {
+    if (!ui.draft || ui.draft.forCat !== (catId || null)) {
+      ui.draft = { forCat: catId || null, category: catId || "", title: "", body: "", tags: [], moment: state.profile.moment, showMoment: state.profile.showMoment };
+      ui.showAllTags = false;
+    }
+    const d = ui.draft;
+    const groups = D.blocks.map((b) => '<optgroup label="' + esc(b.name) + '">' + D.categories.filter((c) => c.block === b.id).map((c) => '<option value="' + c.id + '"' + (d.category === c.id ? " selected" : "") + ">" + esc(c.name) + "</option>").join("") + "</optgroup>").join("") +
+      '<optgroup label="Altres espais">' + D.categories.filter((c) => !c.block).map((c) => '<option value="' + c.id + '"' + (d.category === c.id ? " selected" : "") + ">" + esc(c.name) + "</option>").join("") + "</optgroup>";
+    const back = catId ? "#/cat/" + catId : "#/";
+    return {
+      tab: null,
+      html:
+        '<form id="new-form" data-form="new" novalidate>' +
+        '<div class="form-head"><a href="' + back + '">Cancel·la</a><h1>Nou fil</h1><span style="width:82px"></span></div>' +
+        '<div class="form">' +
+        '<div class="field"><label for="n-cat">Categoria</label><select id="n-cat" data-draft="category"><option value="">Tria una categoria</option>' + groups + '</select><p class="error" id="e-cat" hidden>Tria una categoria per publicar el fil.</p></div>' +
+        '<div class="field"><label for="n-title">Títol</label><input type="text" id="n-title" data-draft="title" maxlength="120" placeholder="Per exemple: A algú més li passa…?" value="' + esc(d.title) + '"><p class="error" id="e-title" hidden>Escriu un títol.</p></div>' +
+        '<div class="field"><label for="n-body">Explica-ho</label><textarea id="n-body" data-draft="body" rows="5" placeholder="Explica què et passa o què vols compartir">' + esc(d.body) + '</textarea><p class="error" id="e-body" hidden>Escriu el missatge del fil.</p></div>' +
+        '<div class="field" id="tag-area">' + tagAreaHtml() + "</div>" +
+        '<div class="field"><span class="label" style="font-size:14px;font-weight:700;color:var(--muted)">El meu moment</span><div class="panel">' +
+        '<label for="n-moment" class="sr">Moment</label><select id="n-moment" data-draft="moment" style="height:48px;border-radius:12px;border:1px solid var(--line);padding:0 12px;font-weight:700;background:var(--surface)">' +
+        D.moments.map((m) => '<option value="' + m.id + '"' + (d.moment === m.id ? " selected" : "") + ">" + esc(m.name) + "</option>").join("") +
+        '</select><p class="hint" style="margin:0;font-size:13px;color:var(--muted)">Ve del teu perfil. Canvia’l si escrius sobre una altra etapa.</p><div class="divider"></div>' +
+        '<div class="toggle-row" style="justify-content:space-between;font-size:14px;color:var(--ink)"><span id="show-label">Mostrar-lo en aquest fil</span><button type="button" class="switch" role="switch" aria-labelledby="show-label" aria-checked="' + d.showMoment + '" data-action="draft-show"><span></span></button></div>' +
+        "</div></div>" +
+        '<div class="notice">' + icon("info", 20) + '<span>Aquí compartim experiències, no consells mèdics. Si tens un dubte clínic, pots <a href="#/cat/hormonoterapia" data-action="toast" data-msg="A la versió real, aquí es contactaria l’equip">preguntar a l’equip</a>.</span></div>' +
+        "</div></form>",
+      footer: '<div class="form-foot"><button class="primary" type="submit" form="new-form">Publica el fil</button></div>'
+    };
+  }
+
+  function viewSearch(q) {
+    const nq = norm(q);
+    const words = nq.trim().split(/\s+/).filter(Boolean);
+    const res = state.threads.filter((t) => {
+      const hay = norm([t.title, t.body, t.tags.map((x) => tag(x).name).join(" "), cat(t.category).name].join(" "));
+      return words.every((w) => hay.includes(w));
+    });
+    return {
+      tab: "comunitat",
+      html:
+        '<div class="topbar"><a class="icon-btn" href="#/" aria-label="Tornar">' + icon("back", 20, 2) + "</a></div>" +
+        '<section class="hero" style="padding-top:4px"><form class="search" role="search" data-form="search"><label for="q" class="sr">Cerca</label>' + icon("search") +
+        '<input id="q" name="q" type="search" value="' + esc(q) + '" autocomplete="off"></form></section>' +
+        '<div class="page-head" style="padding-top:4px"><p>' + res.length + (res.length === 1 ? " fil trobat" : " fils trobats") + "</p></div>" +
+        (res.length ? '<div class="feed">' + res.map((t) => cardHtml(t)).join("") + "</div>"
+          : '<div class="empty"><p>No hem trobat cap fil amb «' + esc(q) + '». Prova amb una altra paraula o obre un fil nou.</p><a class="answer-btn" style="padding:0 18px" href="#/nou">Obre un fil</a></div>')
+    };
+  }
+
+  function viewBoard(only) {
+    const kinds = only ? BOARD_KINDS.filter((k) => k[0] === only) : BOARD_KINDS;
+    const tabs = [["", "Tot"]].concat(BOARD_KINDS);
+    return {
+      tab: "comunitat",
+      html:
+        '<div class="topbar"><a class="icon-btn" href="#/" aria-label="Tornar">' + icon("back", 20, 2) + "</a></div>" +
+        '<div class="page-head"><h1>Plafó</h1><p>Activitats, notícies i recursos revisats per l’equip.</p></div>' +
+        '<nav class="chips" style="padding-top:12px" aria-label="Seccions del Plafó">' +
+        tabs.map((t) => '<a class="chip" href="#/plafo' + (t[0] ? "/" + t[0] : "") + '"' + ((only || "") === t[0] ? ' aria-current="page"' : "") + ' style="text-decoration:none">' + t[1] + "</a>").join("") +
+        "</nav>" +
+        kinds.map((k) => {
+          const items = D.board.filter((b) => b.kind === k[0]);
+          return '<section class="section"><div class="section-head"><h2>' + k[1] + '</h2></div><div class="feed" style="padding:0">' +
+            items.map((b) => '<div class="board-inline tone-' + b.kind + '"><span class="kind">' + icon(boardKindIcon(b.kind), 16, 2) + esc(b.label) + '</span><span class="title">' + esc(b.title) + '</span><span class="meta">' + esc(b.meta) + "</span></div>").join("") +
+            "</div></section>";
+        }).join("")
+    };
+  }
+
+  function viewProfile() {
+    const p = state.profile;
+    const saved = state.threads.filter((t) => state.saved[t.id]);
+    const mine = state.threads.filter((t) => t.author === "me");
+    const mini = (list, empty) => list.length
+      ? '<div class="list">' + list.map((t) => '<a class="row" href="#/fil/' + t.id + '"><span class="txt"><span class="t" style="font-size:15px">' + esc(t.title) + '</span><span class="s">' + esc(cat(t.category).name) + "</span></span>" + icon("chevron", 18, 2) + "</a>").join("") + "</div>"
+      : '<p class="hint" style="margin:0;color:var(--muted);font-size:14px">' + empty + "</p>";
+    return {
+      tab: "perfil",
+      html:
+        '<div class="page-head" style="padding-top:28px"><h1>El meu perfil</h1></div>' +
+        '<form class="form" data-form="profile" style="padding-top:12px">' +
+        '<div class="field"><label for="p-alias">Nom a la comunitat</label><input type="text" id="p-alias" data-profile="alias" value="' + esc(p.alias) + '"></div>' +
+        '<div class="field"><label for="p-moment">El meu moment</label><select id="p-moment" data-profile="moment">' +
+        D.moments.map((m) => '<option value="' + m.id + '"' + (p.moment === m.id ? " selected" : "") + ">" + esc(m.name) + "</option>").join("") +
+        '</select><p class="hint">Es fa servir per suggerir-te fils i apareix al costat del teu nom. El pots canviar quan vulguis.</p></div>' +
+        '<div class="panel"><div class="toggle-row" style="justify-content:space-between;font-size:14px;color:var(--ink)"><span id="p-show-label">Mostrar el meu moment a la comunitat</span>' +
+        '<button type="button" class="switch" role="switch" aria-labelledby="p-show-label" aria-checked="' + p.showMoment + '" data-action="profile-show"><span></span></button></div></div>' +
+        "</form>" +
+        '<section class="section"><div class="section-head"><h2>Fils desats</h2></div>' + mini(saved, "Desa fils amb la icona del marcador per tornar-hi més tard.") + "</section>" +
+        '<section class="section"><div class="section-head"><h2>Els meus fils</h2></div>' + mini(mine, "Encara no has obert cap fil.") + "</section>" +
+        '<section class="section"><button class="danger-link" data-action="reset">Restableix les dades de la demo</button></section>'
+    };
+  }
+
+  function viewSimple(tab, title, text) {
+    return { tab: tab, html: '<div class="page-head" style="padding-top:28px"><h1>' + title + '</h1></div><div class="empty"><p>' + text + '</p><a class="answer-btn" style="padding:0 18px" href="#/">Vés a Comunitat</a></div>' };
+  }
+  function viewNotFound() { return viewSimple(null, "No l’hem trobat", "Aquesta pàgina no existeix o s’ha eliminat."); }
+
+  /* ---------- Render ---------- */
+  const app = document.getElementById("app");
+
+  /* Navegació interna: funciona igual a GitHub Pages i a la vista prèvia de Claude */
+  let current = location.hash.indexOf("#/") === 0 ? location.hash.slice(1) : "/";
+  function go(path) { current = path || "/"; render(); }
+
+  function tabbar(active) {
+    const tabs = [["perfil", "#/perfil", "user", "Perfil"], ["comunitat", "#/", "people", "Comunitat"], ["missatges", "#/missatges", "comment", "Missatges"]];
+    return '<nav class="tabbar" aria-label="Navegació principal">' + tabs.map((t) =>
+      '<a href="' + t[1] + '"' + (active === t[0] ? ' aria-current="page"' : "") + ">" + icon(t[2], 22, active === t[0] ? 2.2 : 1.8) + t[3] + "</a>").join("") + "</nav>";
+  }
+
+  function route() {
+    const raw = current;
+    const [path, query] = raw.split("?");
+    const parts = path.split("/").filter(Boolean).map(decodeURIComponent);
+    switch (parts[0]) {
+      case undefined: return viewHome();
+      case "bloc": return viewBlock(parts[1]);
+      case "cat": return viewCategory(parts[1]);
+      case "fil": return viewThread(parts[1], query);
+      case "nou": return viewNew(parts[1]);
+      case "cerca": return viewSearch(parts.slice(1).join("/"));
+      case "plafo": return viewBoard(parts[1]);
+      case "perfil": return viewProfile();
+      case "missatges": return viewSimple("missatges", "Missatges", "Els missatges privats no formen part d’aquesta demo.");
+      case "inici": return viewSimple("inici", "Inici", "Aquesta demo se centra en l’espai de Comunitat.");
+      default: return viewNotFound();
+    }
+  }
+
+  function render(keepScroll) {
+    const prevScroll = keepScroll ? ($(".view") || {}).scrollTop : 0;
+    const v = route();
+    app.innerHTML =
+      '<main class="view' + (v.fab ? " has-fab" : "") + '">' + v.html + "</main>" +
+      (v.footer || "") + (v.composerHtml || "") + (v.tab !== null && v.tab !== undefined ? tabbar(v.tab) : "") +
+      (v.fab || "") + '<div class="toast" role="status" aria-live="polite"></div>';
+    const view = $(".view");
+    view.scrollTop = prevScroll || 0;
+    app.querySelectorAll(".chips:not(.wrap)").forEach(chipEnd);
+    if (v.focusReply) { const r = $("#reply"); if (r) r.focus(); }
+  }
+
+  function chipEnd(el) { el.classList.toggle("at-end", el.scrollLeft + el.clientWidth >= el.scrollWidth - 4); }
+  document.addEventListener("scroll", (e) => { if (e.target.classList && e.target.classList.contains("chips")) chipEnd(e.target); }, true);
+  let toastTimer;
+  function toast(msg) {
+    const t = $(".toast");
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  /* ---------- Esdeveniments ---------- */
+  app.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-action]");
+    if (!el) {
+      const link = e.target.closest('a[href^="#/"]');
+      if (link) { e.preventDefault(); go(link.getAttribute("href").slice(1)); }
+      return;
+    }
+    const a = el.dataset.action;
+    if (a === "toast") { e.preventDefault(); toast(el.dataset.msg); return; }
+    if (a === "react") {
+      const k = el.dataset.key;
+      state.reacted[k] = !state.reacted[k]; save(); render(true); return;
+    }
+    if (a === "save") {
+      const id = el.dataset.id;
+      state.saved[id] = !state.saved[id]; save(); render(true);
+      toast(state.saved[id] ? "Fil desat al teu perfil" : "Fil tret de desats"); return;
+    }
+    if (a === "home-moment") { ui.homeMoment = el.dataset.id; render(true); return; }
+    if (a === "filter-tag") {
+      const id = (current.split("/")[2] || "").split("?")[0];
+      ui.filters[id].tag = el.dataset.id; render(true); return;
+    }
+    if (a === "block-sub") {
+      const bf = ui.blockFilters[el.dataset.block];
+      bf.sub = el.dataset.id; bf.tag = "tots"; render(true); return;
+    }
+    if (a === "block-tag") { ui.blockFilters[el.dataset.block].tag = el.dataset.id; render(true); return; }
+    if (a === "highlight") { ui.highlightMine = !ui.highlightMine; render(true); return; }
+    if (a === "draft-tag") {
+      const id = el.dataset.id, t = ui.draft.tags;
+      const i = t.indexOf(id);
+      if (i >= 0) t.splice(i, 1); else if (t.length < 2) t.push(id);
+      $("#tag-area").innerHTML = tagAreaHtml(); return;
+    }
+    if (a === "all-tags") { ui.showAllTags = !ui.showAllTags; $("#tag-area").innerHTML = tagAreaHtml(); return; }
+    if (a === "draft-show") {
+      ui.draft.showMoment = !ui.draft.showMoment; el.setAttribute("aria-checked", ui.draft.showMoment); return;
+    }
+    if (a === "profile-show") {
+      state.profile.showMoment = !state.profile.showMoment; save(); el.setAttribute("aria-checked", state.profile.showMoment);
+      toast(state.profile.showMoment ? "El teu moment és visible" : "El teu moment ara és privat"); return;
+    }
+    if (a === "reset") {
+      if (confirm("Vols restablir la demo? S’esborraran els fils i respostes que hagis creat.")) {
+        state = freshState(); save(); ui.draft = null; go("/"); toast("Demo restablerta");
+      }
+    }
+  });
+
+  let suggestTimer;
+  app.addEventListener("input", (e) => {
+    const el = e.target;
+    if (el.dataset.draft) {
+      ui.draft[el.dataset.draft] = el.value;
+      if (el.dataset.draft === "title" || el.dataset.draft === "body") {
+        clearTimeout(suggestTimer);
+        suggestTimer = setTimeout(() => { const area = $("#tag-area"); if (area) area.innerHTML = tagAreaHtml(); }, 250);
+        const err = $("#e-" + el.dataset.draft); if (err && el.value.trim()) err.hidden = true;
+      }
+      if (el.dataset.draft === "category") { const err = $("#e-cat"); if (err && el.value) err.hidden = true; }
+    }
+    if (el.dataset.profile === "alias") { state.profile.alias = el.value.trim() || "anonima"; save(); }
+    if (el.id === "reply") {
+      el.style.height = "auto"; el.style.height = Math.min(el.scrollHeight, 140) + "px";
+      el.form.querySelector("button").disabled = !el.value.trim();
+    }
+  });
+
+  app.addEventListener("change", (e) => {
+    const el = e.target;
+    if (el.dataset.bfilter) { ui.blockFilters[el.dataset.block][el.dataset.bfilter] = el.value; render(true); return; }
+    if (el.dataset.filter) {
+      const id = (current.split("/")[2] || "").split("?")[0];
+      ui.filters[id][el.dataset.filter] = el.value; render(true); return;
+    }
+    if (el.dataset.draft) ui.draft[el.dataset.draft] = el.value;
+    if (el.dataset.profile === "moment") { state.profile.moment = el.value; save(); toast("Moment actualitzat"); }
+  });
+
+  app.addEventListener("submit", (e) => {
+    const f = e.target;
+    e.preventDefault();
+    if (f.dataset.form === "search") {
+      const q = f.q.value.trim();
+      if (q) go("/cerca/" + encodeURIComponent(q));
+      return;
+    }
+    if (f.dataset.form === "reply") {
+      const ta = f.querySelector("textarea"), text = ta.value.trim();
+      if (!text) return;
+      const t = thread(f.dataset.id);
+      t.replies.push({ author: "me", moment: state.profile.showMoment ? state.profile.moment : null, at: Date.now(), text: text, reactions: 0 });
+      save(); render(true);
+      const v = $(".view"); v.scrollTop = v.scrollHeight;
+      toast("Resposta publicada");
+      return;
+    }
+    if (f.dataset.form === "new") {
+      const d = ui.draft;
+      const errs = { cat: !d.category, title: !d.title.trim(), body: !d.body.trim() };
+      Object.keys(errs).forEach((k) => { $("#e-" + k).hidden = !errs[k]; });
+      const first = errs.cat ? "#n-cat" : errs.title ? "#n-title" : errs.body ? "#n-body" : null;
+      if (first) { $(first).focus(); return; }
+      const t = {
+        id: "u" + Date.now(), category: d.category, author: "me",
+        moment: d.showMoment ? d.moment : null, at: Date.now(),
+        title: d.title.trim(), body: d.body.trim(), tags: d.tags.slice(), reactions: 0, replies: []
+      };
+      state.threads.unshift(t); save(); ui.draft = null;
+      go("/fil/" + t.id);
+      setTimeout(() => toast("Fil publicat"), 50);
+    }
+  });
+
+  window.addEventListener("hashchange", () => { if (location.hash.indexOf("#/") === 0) go(location.hash.slice(1)); });
+  render();
+})();
+
+</script>
+</body>
+</html>
